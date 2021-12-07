@@ -68,8 +68,8 @@ class CountLanterns(days: Int) {
 }
 
 object CountLanterns extends App {
-  val lanterns = new CountLanterns(80).lanterns //.map(_.calculateOffspring())
-  var lanterns2 = new CountLanterns(80).lanterns //.map(_.calculateOffspring())
+  val lanterns = new CountLanterns(80).lanterns
+  var lanterns2 = new CountLanterns(80).lanterns // compare old vs new model
   for (i <- 0 to 256) {
     val count = lanterns.map(_.calculateLanternCount(i)).sum
     // old method
