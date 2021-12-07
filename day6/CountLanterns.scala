@@ -27,20 +27,21 @@ class Lantern(val initialAge: Int = 9) {
     return List(this)
   }
   def calculateLanternCount(days: Int): Double = {
-    if(initialAge == 9){
-      if(Lantern.daysDp.contains(days)) return Lantern.daysDp(days)
+    if (initialAge == 9) {
+      if (Lantern.daysDp.contains(days)) return Lantern.daysDp(days)
     }
-    var count = 1D
+    var count = 1d
     val goal = days - initialAge
     val start = -initialAge
-    for (dayIndex <- start until goal){
-      if(dayIndex >= 0){
-        if(dayIndex % 7 == 0){
-          count = count + new Lantern().calculateLanternCount(days + start - dayIndex)
+    for (dayIndex <- start until goal) {
+      if (dayIndex >= 0) {
+        if (dayIndex % 7 == 0) {
+          count =
+            count + new Lantern().calculateLanternCount(days + start - dayIndex)
         }
       }
     }
-    if(initialAge == 9){
+    if (initialAge == 9) {
       Lantern.daysDp += (days -> count)
     }
     count
@@ -67,17 +68,13 @@ class CountLanterns(days: Int) {
 }
 
 object CountLanterns extends App {
-  val lanterns = new CountLanterns(80).lanterns//.map(_.calculateOffspring())
-  var lanterns2 = new CountLanterns(80).lanterns//.map(_.calculateOffspring())
-  for(i <- 0 to 256){
+  val lanterns = new CountLanterns(80).lanterns //.map(_.calculateOffspring())
+  var lanterns2 = new CountLanterns(80).lanterns //.map(_.calculateOffspring())
+  for (i <- 0 to 256) {
     val count = lanterns.map(_.calculateLanternCount(i)).sum
-//    lanterns2 = lanterns2.map(_.dayLapse()).flatten
-//    val count2 = lanterns2.size
-    //println(i,count, count2)    
-    println(i,new java.math.BigDecimal(count).toPlainString)
+    // old method
+    // val count2 = lanterns2.size
+    //println(i,count, count2)
+    println(i, new java.math.BigDecimal(count).toPlainString)
   }
-  //println(lanterns)
-  //println(lanterns)
-//  val lantern = new Lantern(3)
-//  println(lantern.calculateOffspring(80))
 }
