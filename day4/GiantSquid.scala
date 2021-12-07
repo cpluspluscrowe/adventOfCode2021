@@ -6,7 +6,7 @@ case class Board(lines: List[List[Int]])
 class InputReader(isTest: Boolean = true) {
   private val testPath = "input.txt"
   private val prodPath = "inputLarge.txt"
-  private val pathToUse = if(isTest) testPath else prodPath
+  private val pathToUse = if (isTest) testPath else prodPath
   private val source = scala.io.Source.fromFile(pathToUse)
   private val lines = source.getLines.toList
   val calls = lines(0).split(",").map(_.toInt).toList
@@ -22,25 +22,39 @@ class InputReader(isTest: Boolean = true) {
 
   def inverseBoards(boards: List[Board]): List[Board] = {
     boards.map(board =>
-    Board(List.range(0,board.lines(0).size).map(lineIndex => {
-      board.lines.map(line => line(lineIndex)).toList
-    }).toList))
+      Board(
+        List
+          .range(0, board.lines(0).size)
+          .map(lineIndex => {
+            board.lines.map(line => line(lineIndex)).toList
+          })
+          .toList
+      )
+    )
   }
 
-  def convertToBoards(bingoLines: List[List[Int]], boardIndex: Int = 1): List[Board] = {
-    val currentBoard = List(Board(bingoLines.slice((boardIndex - 1) * 5,boardIndex * 5)))
-    if(boardIndex * 5 == bingoLines.size){
+  def convertToBoards(
+      bingoLines: List[List[Int]],
+      boardIndex: Int = 1
+  ): List[Board] = {
+    val currentBoard = List(
+      Board(bingoLines.slice((boardIndex - 1) * 5, boardIndex * 5))
+    )
+    if (boardIndex * 5 == bingoLines.size) {
       return currentBoard
-    }else{
+    } else {
       return currentBoard ++ convertToBoards(bingoLines, boardIndex + 1)
     }
   }
   def getHorizontalBingoLines(lines: List[String]): List[List[Int]] = {
-    lines.slice(1, lines.size).filter(_.size > 0)
+    lines
+      .slice(1, lines.size)
+      .filter(_.size > 0)
       .map(line => {
         val splitNumbers = line.split("\\s+").filter(_.size > 0)
         splitNumbers.map(_.toInt).toList
-      }).toList
+      })
+      .toList
   }
 }
 
@@ -55,10 +69,14 @@ object GameInfo extends App {
   def callNumber(number: Int, boards: List[Board]): List[Board] = {
     // replace the called number with Integer.MIN_VALUE
     boards.map(board =>
-      Board(board.lines.map(line =>
-        line.map(value =>
-          if(value.equals(number)) Integer.MIN_VALUE else value
-        ))))
+      Board(
+        board.lines.map(line =>
+          line.map(value =>
+            if (value.equals(number)) Integer.MIN_VALUE else value
+          )
+        )
+      )
+    )
   }
   def didBoardWin(board: Board): Boolean = {
     // look for a row of all Integer.MIN_VALUE
@@ -66,22 +84,25 @@ object GameInfo extends App {
   }
   def getBoardScore(board: Board): Int = {
     // replace Integer.MIN_VALUE with 0 and sum all lists
-    board.lines.map(line =>
-      line.map(number =>
-        if(number.equals(Integer.MIN_VALUE)) 0 else number
-      ).sum).sum
+    board.lines
+      .map(line =>
+        line
+          .map(number => if (number.equals(Integer.MIN_VALUE)) 0 else number)
+          .sum
+      )
+      .sum
   }
   def main(calls: List[Int] = null, boards: List[Board] = null): Int = {
     // start the recursion!
-    if(calls == null) return main(gameInfo.calls, gameInfo.boards)
+    if (calls == null) return main(gameInfo.calls, gameInfo.boards)
     // check for an error
-    if(calls.isEmpty) throw new Exception("Eternal Bingo Game, YIKES")
+    if (calls.isEmpty) throw new Exception("Eternal Bingo Game, YIKES")
 
     val call = calls.head
     val rest = calls.tail
     val updatedBoards = callNumber(call, boards)
-    for(board <- updatedBoards){
-      if(didBoardWin(board)){
+    for (board <- updatedBoards) {
+      if (didBoardWin(board)) {
         return getBoardScore(board) * call
       }
     }
