@@ -100,13 +100,20 @@ object GameInfo extends App {
 
     val call = calls.head
     val rest = calls.tail
+
+    // you can remove all boards with the winning score
     val updatedBoards = callNumber(call, boards)
-    for (board <- updatedBoards) {
-      if (didBoardWin(board)) {
-        return getBoardScore(board) * call
-      }
+    val winningBoards = updatedBoards.filter(didBoardWin(_))
+    val winningBoardsRawScores = winningBoards.map(getBoardScore(_))
+    val leftoverBoards = updatedBoards.filter(board => {
+      val score = getBoardScore(board)
+      !winningBoardsRawScores.contains(score)
+    })
+    if (leftoverBoards.size == 0 && winningBoards.size == 2) {
+      val scores = winningBoards.map(getBoardScore(_) * call)
+      println(scores)
     }
-    return main(rest, updatedBoards)
+    return main(rest, leftoverBoards)
   }
   val winningScore = main() // so clean
   println(winningScore)
